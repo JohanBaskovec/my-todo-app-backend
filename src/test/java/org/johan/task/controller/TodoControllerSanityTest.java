@@ -1,4 +1,4 @@
-package org.johan.todo.controller;
+package org.johan.task.controller;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,10 +7,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
-class TodoControllerSanityTest {
+class TaskControllerSanityTest {
 
     @Autowired
-    private TodoController controller;
+    private TaskController controller;
 
     @Test
     void contextLoads() throws Exception {

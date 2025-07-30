@@ -1,6 +1,6 @@
-package org.johan.todo.advice;
+package org.johan.task.advice;
 
-import org.johan.todo.exception.TodoNotFoundException;
+import org.johan.task.exception.TaskNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,9 +13,9 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionHandlers {
-    @ExceptionHandler(TodoNotFoundException.class)
+    @ExceptionHandler(TaskNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleTodoNotFoundException(TodoNotFoundException e) {
+    public Map<String, String> handleTaskNotFoundException(TaskNotFoundException e) {
         Map<String, String> errors = new HashMap<>();
         errors.put("error", e.getMessage());
         return errors;

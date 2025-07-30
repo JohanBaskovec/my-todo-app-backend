@@ -1,8 +1,8 @@
-package org.johan.todo.controller;
+package org.johan.task.controller;
 
-import org.johan.todo.model.Todo;
-import org.johan.todo.repository.TodoRepository;
-import org.johan.todo.services.TodoService;
+import org.johan.task.model.Task;
+import org.johan.task.repository.TaskRepository;
+import org.johan.task.services.TaskService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,117 +21,117 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(TodoController.class)
-public class TodoControllerTest {
+@WebMvcTest(TaskController.class)
+public class TaskControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockitoBean
-    private TodoService todoService;
+    private TaskService taskService;
 
     @MockitoBean
-    private TodoRepository todoRepository;
+    private TaskRepository taskRepository;
 
     @Test
-    void whenGetTodo_thenReturnAllTodos() throws Exception {
-        List<Todo> expectedTodos = List.of(
-                new Todo("Finish this"),
-                new Todo("Finish this 2")
+    void whenGetTask_thenReturnAllTasks() throws Exception {
+        List<Task> expectedTasks = List.of(
+                new Task("Finish this"),
+                new Task("Finish this 2")
         );
-        when(todoService.findAll()).thenReturn(expectedTodos);
+        when(taskService.findAll()).thenReturn(expectedTasks);
 
-        mockMvc.perform(get("/todo"))
+        mockMvc.perform(get("/task"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""" 
                         [{"id":null,"name":"Finish this","done":false},{"id":null,"name":"Finish this 2","done":false}]"""));
     }
 
     @Test
-    void whenPostTodoWithValidJson_thenCreateItAndReturn200() throws Exception {
-        mockMvc.perform(post("/todo")
+    void whenPostTaskWithValidJson_thenCreateItAndReturn200() throws Exception {
+        mockMvc.perform(post("/task")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"hello\"}")
         ).andExpect(status().isOk());
-        verify(todoService).save(argThat((Todo todo) -> todo.getName().equals("hello") && !todo.isDone()));
+        verify(taskService).save(argThat((Task task) -> task.getName().equals("hello") && !task.isDone()));
     }
 
     @Test
-    void whenPostTodoWithNoName_thenDoNotCreateItAndReturn400Error() throws Exception {
-        mockMvc.perform(post("/todo")
+    void whenPostTaskWithNoName_thenDoNotCreateItAndReturn400Error() throws Exception {
+        mockMvc.perform(post("/task")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"nam\": \"hello\"}")
                 ).andExpect(status().is4xxClientError())
                 .andExpect(content().string("""
                         {"name":"Name is mandatory"}"""));
-        verify(todoService, never()).save(any());
+        verify(taskService, never()).save(any());
     }
 
     @Test
-    void whenPostTodoWithEmptyName_thenDoNotCreateItAndReturn400Error() throws Exception {
-        mockMvc.perform(post("/todo")
+    void whenPostTaskWithEmptyName_thenDoNotCreateItAndReturn400Error() throws Exception {
+        mockMvc.perform(post("/task")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\": \"\"}")
                 ).andExpect(status().is4xxClientError())
                 .andExpect(content().string("""
                         {"name":"Name is mandatory"}"""));
-        verify(todoService, never()).save(any());
+        verify(taskService, never()).save(any());
     }
 
     @Test
-    void whenPostTodoWithNameOver255Characters_thenDoNotCreateItAndReturn400Error() throws Exception {
+    void whenPostTaskWithNameOver255Characters_thenDoNotCreateItAndReturn400Error() throws Exception {
         char[] longNameBytes = new char[256];
         Arrays.fill(longNameBytes, 'a');
         String longName = new String(longNameBytes);
-        mockMvc.perform(post("/todo")
+        mockMvc.perform(post("/task")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"name": "%s"}""".formatted(longName))
                 ).andExpect(status().is4xxClientError())
                 .andExpect(content().string("""
                         {"name":"length must be between 0 and 255"}"""));
-        verify(todoService, never()).save(any());
+        verify(taskService, never()).save(any());
     }
 
     @Test
-    void whenGetTodoById_thenReturnTodo() throws Exception {
-        Todo expectedTodo = new Todo("Hi");
-        expectedTodo.setId(4L);
-        when(todoService.findById(4L)).thenReturn(Optional.of(expectedTodo));
+    void whenGetTaskById_thenReturnTask() throws Exception {
+        Task expectedTask = new Task("Hi");
+        expectedTask.setId(4L);
+        when(taskService.findById(4L)).thenReturn(Optional.of(expectedTask));
 
-        mockMvc.perform(get("/todo/4"))
+        mockMvc.perform(get("/task/4"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("""
                         {"id":4,"name":"Hi","done":false}"""));
     }
 
     @Test
-    void whenGetTodoByIdThatDoesntExist_thenReturnNothing() throws Exception {
-        when(todoService.findById(4L)).thenReturn(Optional.empty());
+    void whenGetTaskByIdThatDoesntExist_thenReturnNothing() throws Exception {
+        when(taskService.findById(4L)).thenReturn(Optional.empty());
 
-        mockMvc.perform(get("/todo/4"))
+        mockMvc.perform(get("/task/4"))
                 .andExpect(status().isNotFound())
                 .andExpect(content().string("""
-                        {"error":"TODO with id 4 not found."}"""));
+                        {"error":"TASK with id 4 not found."}"""));
     }
 
     @Test
-    void whenDeleteTodoById_thenDeleteIt() throws Exception {
-        mockMvc.perform(delete("/todo/4"))
+    void whenDeleteTaskById_thenDeleteIt() throws Exception {
+        mockMvc.perform(delete("/task/4"))
                 .andExpect(status().isOk());
 
-        verify(todoService, times(1)).deleteById(4L);
+        verify(taskService, times(1)).deleteById(4L);
     }
 
     @Test
-    void whenPutTodoWithValidJson_thenUpdateItAndReturn200() throws Exception {
-        Todo oldTodo = new Todo("Hi");
-        oldTodo.setId(4L);
-        when(todoService.findById(eq(4L))).thenReturn(Optional.of(oldTodo));
+    void whenPutTaskWithValidJson_thenUpdateItAndReturn200() throws Exception {
+        Task oldTask = new Task("Hi");
+        oldTask.setId(4L);
+        when(taskService.findById(eq(4L))).thenReturn(Optional.of(oldTask));
 
-        mockMvc.perform(put("/todo/4")
+        mockMvc.perform(put("/task/4")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"name\": \"hello\"}")
         ).andExpect(status().isOk());
-        verify(todoService).save(argThat((Todo todo) -> todo.getId() == 4L && todo.getName().equals("hello") && !todo.isDone()));
+        verify(taskService).save(argThat((Task task) -> task.getId() == 4L && task.getName().equals("hello") && !task.isDone()));
     }
 }

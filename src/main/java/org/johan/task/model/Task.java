@@ -1,4 +1,4 @@
-package org.johan.todo.model;
+package org.johan.task.model;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +10,7 @@ import org.hibernate.validator.constraints.Length;
 import java.util.Objects;
 
 @Entity
-public class Todo {
+public class Task {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
@@ -21,17 +21,17 @@ public class Todo {
 
     private boolean done = false;
 
-    protected Todo() {
+    protected Task() {
 
     }
 
-    public Todo(String name) {
+    public Task(String name) {
         this.name = name;
     }
 
     @Override
     public String toString() {
-        return "Todo{" +
+        return "Task{" +
                 "id=" + id +
                 ", title='" + name + '\'' +
                 ", done=" + done +
@@ -41,8 +41,8 @@ public class Todo {
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
-        Todo todo = (Todo) o;
-        return done == todo.done && Objects.equals(id, todo.id) && Objects.equals(name, todo.name);
+        Task task = (Task) o;
+        return done == task.done && Objects.equals(id, task.id) && Objects.equals(name, task.name);
     }
 
     @Override

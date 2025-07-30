@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>org.johan</groupId>
-    <artifactId>todo_java_spring_backend</artifactId>
+    <artifactId>task_java_spring_backend</artifactId>
     <version>1.0-SNAPSHOT</version>
-    <description>The backend of a TODO list app</description>
+    <description>The backend of a TASK list app</description>
 
     <properties>
         <maven.compiler.source>22</maven.compiler.source>
