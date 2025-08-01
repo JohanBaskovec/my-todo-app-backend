@@ -19,7 +19,7 @@ public class TaskController {
 
     @GetMapping("/task")
     public List<Task> tasks() {
-        return taskService.findAll();
+        return taskService.findAllSorteByModificationDate();
     }
 
     @PostMapping("/task")
@@ -39,6 +39,7 @@ public class TaskController {
         if (taskOptional.isPresent()) {
             Task task = taskOptional.get();
             task.setName(newTask.getName());
+            task.setDone(newTask.isDone());
             return taskService.save(task);
         } else {
             throw new TaskNotFoundException(id);

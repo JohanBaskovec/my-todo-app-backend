@@ -2,6 +2,7 @@ package org.johan.task.services;
 
 import org.johan.task.model.Task;
 import org.johan.task.repository.TaskRepository;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,10 @@ public class TaskService {
 
     public List<Task> findAll() {
         return taskRepository.findAll();
+    }
+
+    public List<Task> findAllSorteByModificationDate() {
+        return taskRepository.findAll(Sort.by(Sort.Direction.DESC, "lastModificationDateTime"));
     }
 
     public Task save(Task task) {

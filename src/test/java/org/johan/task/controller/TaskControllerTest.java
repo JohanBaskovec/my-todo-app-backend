@@ -38,12 +38,12 @@ public class TaskControllerTest {
                 new Task("Finish this"),
                 new Task("Finish this 2")
         );
-        when(taskService.findAll()).thenReturn(expectedTasks);
+        when(taskService.findAllSorteByModificationDate()).thenReturn(expectedTasks);
 
         mockMvc.perform(get("/task"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""" 
-                        [{"id":null,"name":"Finish this","done":false},{"id":null,"name":"Finish this 2","done":false}]"""));
+                         [{"id":null,"name":"Finish this","done":false,"creationDateTime":null,"lastModificationDateTime":null},{"id":null,"name":"Finish this 2","done":false,"creationDateTime":null,"lastModificationDateTime":null}]"""));
     }
 
     @Test
@@ -101,7 +101,7 @@ public class TaskControllerTest {
         mockMvc.perform(get("/task/4"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("""
-                        {"id":4,"name":"Hi","done":false}"""));
+                         {"id":4,"name":"Hi","done":false,"creationDateTime":null,"lastModificationDateTime":null}"""));
     }
 
     @Test

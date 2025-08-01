@@ -1,12 +1,12 @@
 package org.johan.task.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Length;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
@@ -21,6 +21,12 @@ public class Task {
 
     private boolean done = false;
 
+    @CreationTimestamp
+    private LocalDateTime creationDateTime;
+
+    @UpdateTimestamp
+    private LocalDateTime lastModificationDateTime;
+
     protected Task() {
 
     }
@@ -33,8 +39,10 @@ public class Task {
     public String toString() {
         return "Task{" +
                 "id=" + id +
-                ", title='" + name + '\'' +
+                ", name='" + name + '\'' +
                 ", done=" + done +
+                ", creationDateTime=" + creationDateTime +
+                ", lastModificationDateTime=" + lastModificationDateTime +
                 '}';
     }
 
@@ -72,5 +80,13 @@ public class Task {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public LocalDateTime getLastModificationDateTime() {
+        return lastModificationDateTime;
+    }
+
+    public LocalDateTime getCreationDateTime() {
+        return creationDateTime;
     }
 }
